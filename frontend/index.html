@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>English Homework — Đăng nhập</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="khung" style="max-width:440px;padding-top:8vh">
+  <div style="text-align:center;margin-bottom:22px">
+    <div class="logo" style="width:56px;height:56px;font-size:24px;border-radius:16px;margin:0 auto 12px">Đ</div>
+    <h1 style="font-size:21px;font-weight:700">English homework</h1>
+    <p style="font-size:13.5px;color:var(--phu)">Thầy Lê Tiến Đạt</p>
+  </div>
+
+  <div class="bao-loi" id="baoLoi"></div>
+
+  <div class="the" id="buoc1">
+    <div class="nhom">
+      <label for="maLop">Mã lớp</label>
+      <input type="text" id="maLop" placeholder="Ví dụ: CLB9-2026" autocomplete="off" autocapitalize="characters">
+    </div>
+    <button class="nut nut-chinh nut-rong" id="nutTiepTuc">Tiếp tục</button>
+  </div>
+
+  <div class="the" id="buoc2" style="display:none">
+    <p style="font-weight:600;margin-bottom:12px" id="tenLopHien"></p>
+    <div class="nhom">
+      <label for="chonTen">Chọn tên của em</label>
+      <select id="chonTen"></select>
+    </div>
+    <button class="nut nut-chinh nut-rong" id="nutVaoLop">Vào lớp</button>
+    <button class="nut nut-rong" style="margin-top:8px" onclick="location.reload()">Nhập lại mã lớp</button>
+  </div>
+
+  <p style="font-size:12.5px;color:var(--mo);text-align:center;margin-top:14px">
+    Lưu ý: không dùng tab ẩn danh để bài làm dở được lưu tự động.<br>
+    Không thấy tên mình trong danh sách? Báo thầy để được thêm nhé.
+  </p>
+</div>
+
+<script src="config.js"></script>
+<script src="app.js"></script>
+<script>
+let dsHS = [], lopInfo = null;
+const phienCu = getPhien();
+if (phienCu) location.href = 'dashboard.html';
+
+document.getElementById('nutTiepTuc').addEventListener('click', async () => {
+  const maLop = document.getElementById('maLop').value.trim();
+  if (!maLop) { baoLoi('Em nhập mã lớp trước nhé.'); return; }
+  baoLoi('');
+  const nut = document.getElementById('nutTiepTuc');
+  nut.disabled = true; nut.textContent = 'Đang kiểm tra...';
+  const r = await callAPI({ action: 'loginLop', maLop });
+  nut.disabled = false; nut.textContent = 'Tiếp tục';
+  if (!r.ok) { baoLoi(r.error); return; }
+  lopInfo = r; dsHS = r.dsHocSinh;
+  document.getElementById('tenLopHien').textContent = r.tenLop;
+  document.getElementById('chonTen').innerHTML =
+    '<option value="">— Chọn tên —</option>' +
+    dsHS.map(h => `<option value="${h.id}">${esc(h.hoTen)}${h.stt ? ' (STT ' + h.stt + ')' : ''}</option>`).join('');
+  document.getElementById('buoc1').style.display = 'none';
+  document.getElementById('buoc2').style.display = 'block';
+});
+document.getElementById('maLop').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('nutTiepTuc').click();
+});
+
+document.getElementById('nutVaoLop').addEventListener('click', () => {
+  const id = document.getElementById('chonTen').value;
+  if (!id) { baoLoi('Em chọn tên của mình trong danh sách nhé.'); return; }
+  const hs = dsHS.find(h => h.id === id);
+  setPhien({ lopID: lopInfo.lopID, tenLop: lopInfo.tenLop, hocSinhID: id, hoTen: hs.hoTen });
+  location.href = 'dashboard.html';
+});
+</script>
+</body>
+</html>

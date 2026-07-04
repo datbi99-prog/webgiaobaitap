@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bài tập của em</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="khung">
+  <div class="dau-trang">
+    <div class="logo" id="avatar"></div>
+    <div style="flex:1">
+      <h1 id="tenHS"></h1>
+      <p id="tenLop"></p>
+    </div>
+    <button class="nut nut-nho" id="nutThoat">Thoát</button>
+  </div>
+
+  <div class="bao-loi" id="baoLoi"></div>
+  <div class="dang-tai" id="dangTai">Đang tải bài tập...</div>
+  <div id="dsBai"></div>
+</div>
+
+<script src="config.js"></script>
+<script src="app.js"></script>
+<script>
+const phien = canPhien();
+if (phien) {
+  document.getElementById('tenHS').textContent = phien.hoTen;
+  document.getElementById('tenLop').textContent = phien.tenLop;
+  document.getElementById('avatar').textContent = phien.hoTen.trim().split(' ').pop().slice(0, 1).toUpperCase();
+  taiDS();
+}
+document.getElementById('nutThoat').addEventListener('click', () => { xoaPhien(); location.href = 'index.html'; });
+
+const NHAN = {
+  chua_lam: '<span class="nhan nhan-vang">Chưa làm</span>',
+  da_nop:   '<span class="nhan nhan-xanh">Đã nộp</span>',
+  cho_duyet:'<span class="nhan nhan-vang">Chờ thầy duyệt</span>',
+  qua_han:  '<span class="nhan nhan-do">Quá hạn</span>'
+};
+
+async function taiDS() {
+  const r = await callAPI({ action: 'getBaiTapList', lopID: phien.lopID, hocSinhID: phien.hocSinhID });
+  document.getElementById('dangTai').style.display = 'none';
+  if (!r.ok) { baoLoi(r.error); return; }
+  if (!r.dsBaiTap.length) {
+    document.getElementById('dsBai').innerHTML =
+      '<div class="the" style="text-align:center;color:var(--phu)">Chưa có bài tập nào. Em quay lại sau nhé!</div>';
+    return;
+  }
+  document.getElementById('dsBai').innerHTML = r.dsBaiTap.map(bt => {
+    const conLuot = bt.daLam < bt.soLanLam && bt.trangThai !== 'qua_han';
+    const link = (bt.trangThai === 'chua_lam' || (conLuot && bt.trangThai !== 'chua_lam'))
+      ? `exam.html?id=${bt.baiTapID}`
+      : (bt.baiNopID ? `result.html?id=${bt.baiNopID}` : '#');
+    const diem = bt.diem !== null && bt.diem !== undefined && bt.diem !== ''
+      ? `<span class="nhan nhan-xanh">${bt.diem} điểm</span>` : NHAN[bt.trangThai] || '';
+    const meta = [
+      bt.hanNop ? 'Hạn: ' + fmtNgay(bt.hanNop) : 'Không giới hạn hạn nộp',
+      bt.thoiGianLamBai ? bt.thoiGianLamBai + ' phút' : null,
+      bt.soLanLam > 1 ? `Lượt ${bt.daLam}/${bt.soLanLam}` : null
+    ].filter(Boolean).join(' · ');
+    return `<a class="hang-bai" href="${link}">
+      <span><b>${esc(bt.tieuDe)}</b><small>${meta}</small></span>${diem}</a>`;
+  }).join('');
+}
+</script>
+</body>
+</html>

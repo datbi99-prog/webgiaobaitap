@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kết quả bài làm</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="khung">
+  <div class="dau-trang">
+    <div style="flex:1">
+      <h1 id="tieuDe">Kết quả</h1>
+      <p id="tenHS"></p>
+    </div>
+    <a class="nut nut-nho" href="dashboard.html">Về trang chính</a>
+  </div>
+
+  <div class="bao-loi" id="baoLoi"></div>
+  <div class="dang-tai" id="dangTai">Đang tải kết quả...</div>
+  <div id="noiDung" style="display:none">
+    <div class="o-diem" id="oDiem"></div>
+    <div id="ghiChuCho"></div>
+    <div id="dsCau"></div>
+  </div>
+</div>
+
+<script src="config.js"></script>
+<script src="app.js"></script>
+<script>
+const phien = canPhien();
+if (phien) {
+  document.getElementById('tenHS').textContent = phien.hoTen + ' · ' + phien.tenLop;
+  taiKQ();
+}
+
+async function taiKQ() {
+  const r = await callAPI({ action: 'getKetQua', baiNopID: qs('id'), hocSinhID: phien.hocSinhID });
+  document.getElementById('dangTai').style.display = 'none';
+  if (!r.ok) { baoLoi(r.error); return; }
+
+  if (!r.xemDuocKetQua) {
+    document.getElementById('noiDung').style.display = 'block';
+    document.getElementById('oDiem').innerHTML =
+      `<div style="grid-column:1/-1"><small>Đã nộp bài thành công</small>
+       <b style="font-size:16px">${esc(r.thongBao)}</b></div>`;
+    return;
+  }
+
+  document.getElementById('tieuDe').textContent = r.tieuDe;
+  document.getElementById('noiDung').style.display = 'block';
+  document.getElementById('oDiem').innerHTML = `
+    <div><small>Điểm</small><b>${r.diem}<span style="font-size:13px;color:var(--mo)">/${r.thangDiem}</span></b></div>
+    <div><small>Số câu đúng</small><b>${r.soDung}<span style="font-size:13px;color:var(--mo)">/${r.tongCau}</span></b></div>
+    <div><small>Điểm gốc</small><b>${r.diemGoc}<span style="font-size:13px;color:var(--mo)">/${r.tongDiemGoc}</span></b></div>`;
+
+  if (r.soCho > 0) document.getElementById('ghiChuCho').innerHTML =
+    `<div class="the the-nhan" style="border-left-color:var(--vang);font-size:13.5px">
+     Có <b>${r.soCho} câu đang chờ thầy duyệt</b> — điểm có thể tăng sau khi thầy xem. Em quay lại kiểm tra sau nhé.</div>`;
+
+  const NHAN = { dung: ['dung', 'Đúng', 'nhan-xanh'], sai: ['sai', 'Sai', 'nhan-do'], cho_duyet: ['cho', 'Chờ duyệt', 'nhan-vang'] };
+  let stt = 0;
+  document.getElementById('dsCau').innerHTML = r.chiTiet.map(c => {
+    stt++;
+    const [lop, ten, mau] = NHAN[c.trangThai] || NHAN.sai;
+    return `<div class="kq-cau ${lop}">
+      <div style="display:flex;justify-content:space-between;gap:8px;margin-bottom:5px">
+        <b style="font-size:14px">Câu ${stt}</b>
+        <span class="nhan ${mau}">${ten} · ${c.diem}/${c.diemToiDa}</span>
+      </div>
+      <div style="font-size:14px;margin-bottom:6px">${esc(c.text)}${c.keyword ? ' <span class="tu-khoa">' + esc(c.keyword) + '</span>' : ''}</div>
+      <div style="font-size:13.5px">Em trả lời: <b>${c.type === 'mcq' && c.options ? chuCai(Number(c.traLoi)) + '. ' + esc(c.options[c.traLoi] || '') : esc(c.traLoi) || '<i style="color:var(--mo)">bỏ trống</i>'}</b></div>
+      ${c.trangThai !== 'dung' ? `<div style="font-size:13.5px;color:var(--xanh-dam)">Đáp án: <b>${esc(c.dapAn)}</b></div>` : ''}
+      ${c.giaiThich ? `<div class="giai-thich">💡 ${esc(c.giaiThich)}</div>` : ''}
+    </div>`;
+  }).join('');
+}
+</script>
+</body>
+</html>

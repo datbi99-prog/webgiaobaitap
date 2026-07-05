@@ -45,6 +45,13 @@ async function taiDe() {
   if (!r.ok) { baoLoi(r.error); return; }
   deBai = r.deBai;
   document.getElementById('tieuDe').textContent = r.tieuDe;
+  if (r.loaiLan === 'luyen_tap') {
+    const nhan = document.createElement('div');
+    nhan.className = 'bao-ok';
+    nhan.style.display = 'block';
+    nhan.textContent = '🔁 Lượt luyện tập — em có thể làm lại nhiều lần, điểm dùng để theo dõi tiến bộ của em.';
+    document.querySelector('.thanh-thi').after(nhan);
+  }
   renderDe(deBai);
   document.getElementById('deBai').style.display = 'block';
   document.getElementById('thanhNop').style.display = 'block';

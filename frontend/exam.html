@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Làm bài</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="khung">
+  <div class="thanh-thi">
+    <div>
+      <b style="font-size:15px" id="tieuDe">Đang tải...</b>
+      <div style="font-size:12px;color:var(--phu)" id="tenHS"></div>
+    </div>
+    <span class="dong-ho" id="dongHo" style="display:none"></span>
+  </div>
+
+  <div class="bao-loi" id="baoLoi"></div>
+  <div class="dang-tai" id="dangTai">Đang tải đề bài...</div>
+  <form id="deBai" style="display:none"></form>
+
+  <div id="thanhNop" style="display:none;position:sticky;bottom:0;background:var(--nen);padding:12px 0;border-top:1px solid var(--vien)">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+      <small style="color:var(--mo)" id="tuLuu">Bài làm được tự lưu trên máy</small>
+      <button class="nut nut-chinh" id="nutNop">Nộp bài</button>
+    </div>
+  </div>
+</div>
+
+<script src="config.js"></script>
+<script src="app.js"></script>
+<script>
+const phien = canPhien();
+const baiTapID = qs('id');
+const KEY_LUU = 'bailam_' + baiTapID + '_' + (phien ? phien.hocSinhID : '');
+let deBai = null, hetGio = null, dangNop = false;
+
+if (phien && baiTapID) { document.getElementById('tenHS').textContent = phien.hoTen + ' · ' + phien.tenLop; taiDe(); }
+
+async function taiDe() {
+  const r = await callAPI({ action: 'getBaiTap', baiTapID, hocSinhID: phien.hocSinhID });
+  document.getElementById('dangTai').style.display = 'none';
+  if (!r.ok) { baoLoi(r.error); return; }
+  deBai = r.deBai;
+  document.getElementById('tieuDe').textContent = r.tieuDe;
+  if (r.loaiLan === 'luyen_tap') {
+    const nhan = document.createElement('div');
+    nhan.className = 'bao-ok';
+    nhan.style.display = 'block';
+    nhan.textContent = '🔁 Lượt luyện tập — em có thể làm lại nhiều lần, điểm dùng để theo dõi tiến bộ của em.';
+    document.querySelector('.thanh-thi').after(nhan);
+  }
+  renderDe(deBai);
+  document.getElementById('deBai').style.display = 'block';
+  document.getElementById('thanhNop').style.display = 'block';
+  khoiPhuc();
+  if (r.thoiGianLamBai > 0) batDauDongHo(r.thoiGianLamBai * 60);
+  setInterval(luuNhap, 10000);
+  document.getElementById('deBai').addEventListener('input', luuNhap);
+}
+
+function renderDe(de) {
+  let stt = 0;
+  document.getElementById('deBai').innerHTML = (de.sections || []).map(sec => {
+    let html = `<div class="tieu-de-phan">${esc(sec.title || '')}</div>`;
+    if (sec.instructions) html += `<div class="huong-dan">${esc(sec.instructions)}</div>`;
+    if (sec.passage) html += `<div class="doan-van">${esc(sec.passage)}</div>`;
+    html += (sec.questions || []).map(q => {
+      stt++;
+      if (sec.type === 'mcq') {
+        return `<div class="cau"><div class="cau-de"><span class="stt">${stt}.</span> ${esc(q.text)}</div>` +
+          q.options.map((op, i) => `
+          <label class="lua-chon"><input type="radio" name="${q.id}" value="${i}">
+            <span class="chucai">${chuCai(i)}.</span><span>${esc(op)}</span></label>`).join('') + '</div>';
+      }
+      if (sec.type === 'transformation') {
+        return `<div class="cau"><div class="cau-de"><span class="stt">${stt}.</span> ${esc(q.text)}
+          ${q.keyword ? '<span class="tu-khoa">' + esc(q.keyword) + '</span>' : ''}</div>
+          ${q.stem ? '<div style="font-size:14px;color:var(--phu);margin-bottom:7px">' + esc(q.stem).replace('___', '______') + '</div>' : ''}
+          <input type="text" name="${q.id}" placeholder="${q.maxWords ? 'Tối đa ' + q.maxWords + ' từ' : 'Câu trả lời'}" autocomplete="off"></div>`;
+      }
+      return `<div class="cau"><div class="cau-de"><span class="stt">${stt}.</span> ${esc(q.text)}</div>
+        <input type="text" name="${q.id}" placeholder="${sec.type === 'shortanswer' && q.maxWords ? 'Tối đa ' + q.maxWords + ' từ' : 'Câu trả lời'}" autocomplete="off"></div>`;
+    }).join('');
+    return html;
+  }).join('');
+  document.getElementById('deBai').addEventListener('change', e => {
+    if (e.target.type === 'radio') {
+      e.target.closest('.cau').querySelectorAll('.lua-chon').forEach(l => l.classList.remove('chon'));
+      e.target.closest('.lua-chon').classList.add('chon');
+    }
+  });
+}
+
+function layBaiLam() {
+  const bai = {};
+  new FormData(document.getElementById('deBai')).forEach((v, k) => { bai[k] = v; });
+  return bai;
+}
+function luuNhap() {
+  try { localStorage.setItem(KEY_LUU, JSON.stringify(layBaiLam())); } catch (e) {}
+}
+function khoiPhuc() {
+  try {
+    const cu = JSON.parse(localStorage.getItem(KEY_LUU) || '{}');
+    Object.keys(cu).forEach(k => {
+      const els = document.getElementsByName(k);
+      for (const el of els) {
+        if (el.type === 'radio') { if (el.value === cu[k]) { el.checked = true; el.closest('.lua-chon').classList.add('chon'); } }
+        else el.value = cu[k];
+      }
+    });
+  } catch (e) {}
+}
+
+function batDauDongHo(giay) {
+  const el = document.getElementById('dongHo');
+  el.style.display = 'inline-block';
+  hetGio = Date.now() + giay * 1000;
+  const tick = setInterval(() => {
+    const con = Math.max(0, Math.round((hetGio - Date.now()) / 1000));
+    el.textContent = ('0' + Math.floor(con / 60)).slice(-2) + ':' + ('0' + con % 60).slice(-2);
+    if (con <= 120) el.classList.add('gap');
+    if (con <= 0) { clearInterval(tick); nopBai(true); }
+  }, 500);
+}
+
+document.getElementById('nutNop').addEventListener('click', () => {
+  const tong = document.querySelectorAll('.cau').length;
+  const daLam = Object.values(layBaiLam()).filter(v => String(v).trim()).length;
+  if (daLam < tong && !confirm(`Em mới làm ${daLam}/${tong} câu. Nộp luôn chứ?`)) return;
+  nopBai(false);
+});
+
+async function nopBai(tuDong) {
+  if (dangNop) return;
+  dangNop = true;
+  luuNhap();
+  const nut = document.getElementById('nutNop');
+  nut.disabled = true; nut.textContent = 'Đang nộp...';
+  document.getElementById('tuLuu').textContent = 'Đang nộp bài — em đừng thoát trang nhé';
+  const r = await callAPI({
+    action: 'submitBai', baiTapID, hocSinhID: phien.hocSinhID, lopID: phien.lopID, baiLam: layBaiLam()
+  }, 4);
+  if (!r.ok) {
+    dangNop = false; nut.disabled = false; nut.textContent = 'Nộp bài';
+    document.getElementById('tuLuu').textContent = 'Bài làm vẫn được lưu trên máy — thử nộp lại';
+    baoLoi(r.error + (tuDong ? ' (Hết giờ — em bấm Nộp bài để thử lại.)' : ''));
+    return;
+  }
+  localStorage.removeItem(KEY_LUU);
+  location.href = 'result.html?id=' + r.baiNopID + (r.xemDuocKetQua ? '' : '&cho=1');
+}
+</script>
+</body>
+</html>

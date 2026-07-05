@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Học tiếng Anh cùng thầy Đạt</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+.banner{text-align:center;padding:26px 12px 20px}
+.banner h1{font-size:clamp(20px,4.5vw,32px);font-weight:800;letter-spacing:.04em;color:var(--xanh-dam);text-transform:uppercase}
+.banner p{color:var(--phu);font-size:14px;margin-top:4px}
+.hai-cot{display:grid;gap:14px;align-items:start}
+@media(min-width:820px){.hai-cot{grid-template-columns:320px 1fr}}
+.anh-gv{width:96px;height:96px;border-radius:50%;object-fit:cover;border:3px solid var(--xanh-nhat);display:block;margin:0 auto 12px}
+.anh-thay-chu{width:96px;height:96px;border-radius:50%;background:var(--xanh);color:#fff;display:flex;align-items:center;justify-content:center;font-size:34px;font-weight:700;margin:0 auto 12px}
+.o-so{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px}
+.o-so>div{background:var(--nen);border-radius:11px;padding:11px;text-align:center}
+.o-so b{font-size:21px;color:var(--xanh);display:block}
+.o-so small{font-size:11.5px;color:var(--phu)}
+.tb-dong{display:flex;gap:9px;padding:9px 0;border-bottom:1px solid var(--vien);font-size:13.5px}
+.tb-dong:last-child{border:none}
+</style>
+</head>
+<body>
+<div class="khung-rong">
+  <div class="banner">
+    <h1>Học tiếng Anh cùng thầy Đạt</h1>
+    <p>Luyện tập · kiểm tra · theo dõi tiến bộ mỗi ngày</p>
+  </div>
+  <div class="bao-loi" id="baoLoi"></div>
+
+  <div class="hai-cot">
+    <!-- CỘT TRÁI: GIÁO VIÊN -->
+    <div class="the" style="text-align:center">
+      <img class="anh-gv" src="anh-thay.jpg" alt="Thầy Lê Tiến Đạt"
+        onerror="this.outerHTML='&lt;div class=&quot;anh-thay-chu&quot;&gt;Đ&lt;/div&gt;'">
+      <b style="font-size:16.5px">Thầy Lê Tiến Đạt</b>
+      <p style="font-size:13px;color:var(--phu);margin:3px 0 12px">Giáo viên Tiếng Anh</p>
+      <div style="text-align:left;font-size:13.5px;color:var(--chu);line-height:1.75">
+        <p>🏫 THCS Chu Văn An (Tây Hồ, Hà Nội)</p>
+        <p>🎓 Cử nhân Ngôn ngữ Anh — ĐH Sư phạm Hà Nội</p>
+        <p>📚 Luyện thi Cambridge B2 First / C1 Advanced, bồi dưỡng HSG</p>
+        <p>💬 CLB Tiếng Anh — Trung tâm Atlantic</p>
+      </div>
+    </div>
+
+    <!-- CỘT PHẢI -->
+    <div>
+      <!-- ĐĂNG NHẬP -->
+      <div class="the the-nhan">
+        <b style="font-size:15.5px;display:block;margin-bottom:12px">Vào lớp làm bài</b>
+        <div id="buoc1">
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <input type="text" id="maLop" placeholder="Nhập mã lớp (ví dụ: CLB9-2026)"
+              autocomplete="off" autocapitalize="characters" style="flex:1;min-width:180px">
+            <button class="nut nut-chinh" id="nutTiepTuc">Tiếp tục</button>
+          </div>
+        </div>
+        <div id="buoc2" style="display:none">
+          <p style="font-weight:600;margin-bottom:10px" id="tenLopHien"></p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <select id="chonTen" style="flex:1;min-width:180px"></select>
+            <button class="nut nut-chinh" id="nutVaoLop">Vào lớp</button>
+            <button class="nut" onclick="location.reload()">Nhập lại</button>
+          </div>
+        </div>
+        <p style="font-size:12px;color:var(--mo);margin-top:10px">
+          Không dùng tab ẩn danh để bài làm dở được tự lưu. Không thấy tên mình? Báo thầy để được thêm nhé.</p>
+      </div>
+
+      <!-- THÔNG BÁO -->
+      <div class="the" id="khungTB" style="display:none">
+        <b style="font-size:15px;display:block;margin-bottom:6px">📣 Thông báo từ thầy</b>
+        <div id="dsTB"></div>
+      </div>
+
+      <!-- SỐ LIỆU TUẦN -->
+      <div class="the">
+        <b style="font-size:15px;display:block;margin-bottom:10px">Lớp học tuần này</b>
+        <div class="o-so" id="oSo">
+          <div><b>–</b><small>lớp đang học</small></div>
+          <div><b>–</b><small>học sinh</small></div>
+          <div><b>–</b><small>bài nộp tuần này</small></div>
+          <div><b>–</b><small>lượt luyện tập</small></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="config.js"></script>
+<script src="app.js"></script>
+<script>
+let dsHS = [], lopInfo = null;
+if (getPhien()) location.href = 'dashboard.html';
+
+document.getElementById('nutTiepTuc').addEventListener('click', async () => {
+  const maLop = document.getElementById('maLop').value.trim();
+  if (!maLop) { baoLoi('Em nhập mã lớp trước nhé.'); return; }
+  baoLoi('');
+  const nut = document.getElementById('nutTiepTuc');
+  nut.disabled = true; nut.textContent = 'Đang kiểm tra...';
+  const r = await callAPI({ action: 'loginLop', maLop });
+  nut.disabled = false; nut.textContent = 'Tiếp tục';
+  if (!r.ok) { baoLoi(r.error); return; }
+  lopInfo = r; dsHS = r.dsHocSinh;
+  document.getElementById('tenLopHien').textContent = r.tenLop + ' — chọn tên của em:';
+  document.getElementById('chonTen').innerHTML = '<option value="">— Chọn tên —</option>' +
+    dsHS.map(h => `<option value="${h.id}">${esc(h.hoTen)}${h.stt ? ' (STT ' + h.stt + ')' : ''}</option>`).join('');
+  document.getElementById('buoc1').style.display = 'none';
+  document.getElementById('buoc2').style.display = 'block';
+});
+document.getElementById('maLop').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('nutTiepTuc').click();
+});
+document.getElementById('nutVaoLop').addEventListener('click', () => {
+  const id = document.getElementById('chonTen').value;
+  if (!id) { baoLoi('Em chọn tên của mình trong danh sách nhé.'); return; }
+  const hs = dsHS.find(h => h.id === id);
+  setPhien({ lopID: lopInfo.lopID, tenLop: lopInfo.tenLop, hocSinhID: id, hoTen: hs.hoTen });
+  location.href = 'dashboard.html';
+});
+
+// Nội dung động của trang chờ (không cần đăng nhập)
+(async () => {
+  const [tb, tq] = await Promise.all([
+    callAPI({ action: 'getThongBao' }), callAPI({ action: 'getTongQuan' })
+  ]);
+  if (tb.ok && tb.dsThongBao && tb.dsThongBao.length) {
+    document.getElementById('khungTB').style.display = 'block';
+    document.getElementById('dsTB').innerHTML = tb.dsThongBao.map(t =>
+      `<div class="tb-dong"><span style="color:var(--mo);flex:none">${fmtNgay(t.ngayDang).slice(0, 5)}</span>
+       <span>${esc(t.noiDung)}</span></div>`).join('');
+  }
+  if (tq.ok) {
+    document.getElementById('oSo').innerHTML = `
+      <div><b>${tq.soLop}</b><small>lớp đang học</small></div>
+      <div><b>${tq.soHS}</b><small>học sinh</small></div>
+      <div><b>${tq.baiNopTuan}</b><small>bài nộp tuần này</small></div>
+      <div><b>${tq.luotLuyenTuan}</b><small>lượt luyện tập</small></div>`;
+  }
+})();
+</script>
+</body>
+</html>

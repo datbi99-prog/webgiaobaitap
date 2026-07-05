@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Học tiếng Anh cùng thầy Đạt</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+.hero{background:linear-gradient(120deg,#FBFAFF 0%,#F1EBFE 55%,#EAF2FE 100%);
+  border:1px solid var(--xanh-vien);border-radius:22px;padding:30px;
+  display:grid;gap:24px;align-items:center;margin-bottom:16px;box-shadow:var(--bong)}
+@media(min-width:760px){.hero{grid-template-columns:1fr 250px;padding:38px}}
+.hero h1{font-size:clamp(24px,4.2vw,38px);font-weight:800;line-height:1.2;letter-spacing:-.01em}
+.hero h1 .nhan-mau{color:var(--xanh)}
+.hero .mo-ta{color:var(--phu);font-size:15px;margin:8px 0 18px}
+.khoi-anh{text-align:center}
+.anh-gv{width:210px;height:210px;border-radius:28px;object-fit:cover;
+  border:5px solid #fff;box-shadow:0 10px 30px rgba(124,58,237,.22)}
+.anh-thay-chu{width:210px;height:210px;border-radius:28px;margin:0 auto;
+  background:linear-gradient(135deg,#8B5CF6,#6D28D9);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:72px;font-weight:800;
+  box-shadow:0 10px 30px rgba(124,58,237,.28)}
+.khoi-dn{background:#fff;border:1px solid var(--vien);border-radius:16px;padding:16px;
+  box-shadow:var(--bong);max-width:480px}
+.o-so{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:16px}
+.o-so>div{background:var(--the);border:1px solid var(--vien);border-radius:16px;padding:14px;
+  display:flex;gap:12px;align-items:center;box-shadow:var(--bong)}
+.icon-o{width:44px;height:44px;border-radius:13px;flex:none;font-size:20px;
+  display:flex;align-items:center;justify-content:center}
+.o-so b{font-size:22px;font-weight:800;display:block;line-height:1.1}
+.o-so small{font-size:11px;color:var(--phu);text-transform:uppercase;letter-spacing:.06em;font-weight:700}
+.hai-cot{display:grid;gap:14px;align-items:start}
+@media(min-width:820px){.hai-cot{grid-template-columns:1fr 1fr}}
+.tb-dong{display:flex;gap:9px;padding:9px 0;border-bottom:1px solid var(--vien);font-size:13.5px}
+.tb-dong:last-child{border:none}
+.gt-dong{font-size:14px;line-height:1.9}
+</style>
+</head>
+<body>
+<div class="khung-rong">
+  <div class="bao-loi" id="baoLoi" style="margin-top:14px"></div>
+
+  <!-- HERO: tiêu đề + đăng nhập + ảnh giáo viên -->
+  <div class="hero" style="margin-top:14px">
+    <div>
+      <p style="font-size:11.5px;font-weight:800;color:var(--xanh);text-transform:uppercase;letter-spacing:.12em;margin-bottom:8px">
+        ✦ Luyện tập · kiểm tra · theo dõi tiến bộ</p>
+      <h1>Học tiếng Anh cùng<br><span class="nhan-mau">thầy Đạt</span></h1>
+      <p class="mo-ta">Làm bài, nhận kết quả ngay và xem mình tiến bộ mỗi ngày.</p>
+
+      <div class="khoi-dn">
+        <div id="buoc1">
+          <label for="maLop">Mã lớp của em</label>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <input type="text" id="maLop" placeholder="Ví dụ: CLB9-2026"
+              autocomplete="off" autocapitalize="characters" style="flex:1;min-width:160px">
+            <button class="nut nut-chinh" id="nutTiepTuc">Vào lớp →</button>
+          </div>
+        </div>
+        <div id="buoc2" style="display:none">
+          <p style="font-weight:700;margin-bottom:10px;font-size:14px" id="tenLopHien"></p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <select id="chonTen" style="flex:1;min-width:160px"></select>
+            <button class="nut nut-chinh" id="nutVaoLop">Bắt đầu</button>
+            <button class="nut" onclick="location.reload()">Nhập lại</button>
+          </div>
+        </div>
+        <p style="font-size:12px;color:var(--mo);margin-top:10px;text-transform:none;letter-spacing:normal">
+          Không dùng tab ẩn danh để bài làm dở được tự lưu · Không thấy tên mình? Báo thầy nhé.</p>
+      </div>
+    </div>
+    <div class="khoi-anh">
+      <img class="anh-gv" src="anh-thay.jpg" alt="Thầy Lê Tiến Đạt"
+        onerror="this.outerHTML='&lt;div class=&quot;anh-thay-chu&quot;&gt;Đ&lt;/div&gt;'">
+    </div>
+  </div>
+
+  <!-- HÀNG SỐ LIỆU -->
+  <div class="o-so" id="oSo">
+    <div><span class="icon-o" style="background:var(--xanh-nhat)">🏫</span><span><b id="soLop">–</b><small>Lớp đang học</small></span></div>
+    <div><span class="icon-o" style="background:var(--luc-nhat)">🧑‍🎓</span><span><b id="soHS">–</b><small>Học sinh</small></span></div>
+    <div><span class="icon-o" style="background:var(--vang-nhat)">📝</span><span><b id="soNop">–</b><small>Bài nộp tuần này</small></span></div>
+    <div><span class="icon-o" style="background:#EAF2FE">🔁</span><span><b id="soLuyen">–</b><small>Lượt luyện tập</small></span></div>
+  </div>
+
+  <!-- GIỚI THIỆU + THÔNG BÁO -->
+  <div class="hai-cot">
+    <div class="the">
+      <p style="font-size:11.5px;font-weight:800;color:var(--phu);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">Giáo viên</p>
+      <b style="font-size:17px">Thầy Lê Tiến Đạt</b>
+      <div class="gt-dong" style="margin-top:8px;color:var(--chu)">
+        <p>🏫 THCS Chu Văn An (Tây Hồ, Hà Nội)</p>
+        <p>🎓 Cử nhân Ngôn ngữ Anh — ĐH Sư phạm Hà Nội</p>
+        <p>📚 Luyện thi Cambridge B2 First / C1 Advanced, bồi dưỡng HSG</p>
+        <p>💬 CLB Tiếng Anh — Trung tâm Atlantic</p>
+      </div>
+    </div>
+    <div class="the">
+      <p style="font-size:11.5px;font-weight:800;color:var(--phu);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">📣 Thông báo từ thầy</p>
+      <div id="dsTB"><p style="font-size:13.5px;color:var(--mo)">Đang tải...</p></div>
+    </div>
+  </div>
+</div>
+
+<script src="config.js"></script>
+<script src="app.js"></script>
+<script>
+let dsHS = [], lopInfo = null;
+if (getPhien()) location.href = 'dashboard.html';
+
+document.getElementById('nutTiepTuc').addEventListener('click', async () => {
+  const maLop = document.getElementById('maLop').value.trim();
+  if (!maLop) { baoLoi('Em nhập mã lớp trước nhé.'); return; }
+  baoLoi('');
+  const nut = document.getElementById('nutTiepTuc');
+  nut.disabled = true; nut.textContent = 'Đang kiểm tra...';
+  const r = await callAPI({ action: 'loginLop', maLop });
+  nut.disabled = false; nut.textContent = 'Vào lớp →';
+  if (!r.ok) { baoLoi(r.error); return; }
+  lopInfo = r; dsHS = r.dsHocSinh;
+  document.getElementById('tenLopHien').textContent = r.tenLop + ' — chọn tên của em:';
+  document.getElementById('chonTen').innerHTML = '<option value="">— Chọn tên —</option>' +
+    dsHS.map(h => `<option value="${h.id}">${esc(h.hoTen)}${h.stt ? ' (STT ' + h.stt + ')' : ''}</option>`).join('');
+  document.getElementById('buoc1').style.display = 'none';
+  document.getElementById('buoc2').style.display = 'block';
+});
+document.getElementById('maLop').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('nutTiepTuc').click();
+});
+document.getElementById('nutVaoLop').addEventListener('click', () => {
+  const id = document.getElementById('chonTen').value;
+  if (!id) { baoLoi('Em chọn tên của mình trong danh sách nhé.'); return; }
+  const hs = dsHS.find(h => h.id === id);
+  setPhien({ lopID: lopInfo.lopID, tenLop: lopInfo.tenLop, hocSinhID: id, hoTen: hs.hoTen });
+  location.href = 'dashboard.html';
+});
+
+(async () => {
+  const [tb, tq] = await Promise.all([
+    callAPI({ action: 'getThongBao' }), callAPI({ action: 'getTongQuan' })
+  ]);
+  document.getElementById('dsTB').innerHTML = (tb.ok && tb.dsThongBao && tb.dsThongBao.length)
+    ? tb.dsThongBao.map(t =>
+      `<div class="tb-dong"><span style="color:var(--mo);flex:none">${fmtNgay(t.ngayDang).slice(0, 5)}</span>
+       <span>${esc(t.noiDung)}</span></div>`).join('')
+    : '<p style="font-size:13.5px;color:var(--mo)">Chưa có thông báo nào.</p>';
+  if (tq.ok) {
+    document.getElementById('soLop').textContent = tq.soLop;
+    document.getElementById('soHS').textContent = tq.soHS;
+    document.getElementById('soNop').textContent = tq.baiNopTuan;
+    document.getElementById('soLuyen').textContent = tq.luotLuyenTuan;
+  }
+})();
+</script>
+</body>
+</html>

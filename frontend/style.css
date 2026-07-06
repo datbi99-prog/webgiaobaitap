@@ -1,0 +1,146 @@
+/* ============================================================
+   GIAO DIỆN v3 — Ngôn ngữ thiết kế phong cách Buddy Study
+   Tím violet chủ đạo · nền lavender lưới mờ · thẻ bo lớn bóng mềm
+   Giữ nguyên toàn bộ tên class — chỉ thay giá trị thiết kế
+   ============================================================ */
+:root{
+  /* --xanh giữ tên biến cũ nhưng giờ là màu TÍM chủ đạo */
+  --xanh:#7C3AED; --xanh-dam:#5B21B6; --xanh-nhat:#F1EBFE; --xanh-vien:#DCCEFB;
+  --nen:#F5F6FB; --the:#FFFFFF; --chu:#1E2235; --phu:#64748B; --mo:#98A1B3;
+  --vien:#E9EAF2;
+  --vang:#B45309; --vang-nhat:#FEF3E2;
+  --do:#DC2626; --do-nhat:#FEE9E7;
+  --luc:#0E9F6E; --luc-nhat:#E3F7EF;
+  --bo:18px;
+  --bong:0 2px 12px rgba(30,34,53,.06);
+  --bong-tim:0 6px 18px rgba(124,58,237,.30);
+  --gradient:linear-gradient(90deg,#7C3AED,#3B82F6);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Be Vietnam Pro',system-ui,sans-serif;color:var(--chu);
+  font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;
+  background-color:var(--nen);
+  background-image:linear-gradient(rgba(30,34,53,.028) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(30,34,53,.028) 1px,transparent 1px);
+  background-size:34px 34px}
+.khung{max-width:680px;margin:0 auto;padding:16px}
+.khung-rong{max-width:min(1440px,96vw);margin:0 auto;padding:16px}
+
+.dau-trang{display:flex;align-items:center;gap:11px;padding:6px 0 16px}
+.logo{width:40px;height:40px;border-radius:13px;color:#fff;flex:none;
+  background:linear-gradient(135deg,#8B5CF6,#6D28D9);
+  display:flex;align-items:center;justify-content:center;font-weight:800;font-size:17px;
+  box-shadow:var(--bong-tim)}
+.dau-trang h1{font-size:17px;font-weight:800;letter-spacing:-.01em}
+.dau-trang p{font-size:12.5px;color:var(--phu)}
+
+.the{background:var(--the);border:1px solid var(--vien);border-radius:var(--bo);
+  padding:20px;margin-bottom:14px;box-shadow:var(--bong)}
+.the-nhan{border:1px solid var(--xanh-vien);
+  background:linear-gradient(135deg,#FBFAFF 0%,#F3EEFE 100%)}
+
+label{display:block;font-size:11.5px;color:var(--phu);margin-bottom:6px;
+  font-weight:700;text-transform:uppercase;letter-spacing:.07em}
+input[type=text],input[type=number],input[type=datetime-local],select,textarea{
+  width:100%;padding:11px 14px;border:1.5px solid var(--vien);border-radius:13px;
+  font:inherit;font-size:14.5px;background:#fff;color:var(--chu);transition:border-color .15s,box-shadow .15s;
+  text-transform:none;letter-spacing:normal}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--xanh);
+  box-shadow:0 0 0 4px rgba(124,58,237,.12)}
+textarea{resize:vertical}
+.nhom{margin-bottom:15px}
+
+.nut{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:11px 20px;
+  border-radius:14px;border:1.5px solid var(--vien);background:#fff;color:var(--chu);
+  font:inherit;font-size:14px;font-weight:700;cursor:pointer;transition:.15s;text-decoration:none;
+  box-shadow:0 1px 4px rgba(30,34,53,.05)}
+.nut:hover{border-color:var(--xanh-vien);color:var(--xanh);transform:translateY(-1px)}
+.nut:active{transform:scale(.97)}
+.nut-chinh{background:var(--xanh);border-color:var(--xanh);color:#fff;box-shadow:var(--bong-tim)}
+.nut-chinh:hover{background:var(--xanh-dam);border-color:var(--xanh-dam);color:#fff}
+.nut-nho{padding:6px 13px;font-size:12.5px;border-radius:11px}
+.nut-rong{width:100%}
+.nut:disabled{opacity:.55;cursor:not-allowed;transform:none}
+
+.nhan{display:inline-block;font-size:11px;font-weight:700;padding:4px 11px;border-radius:20px;white-space:nowrap}
+.nhan-xanh{background:var(--luc-nhat);color:#046C4E}
+.nhan-vang{background:var(--vang-nhat);color:var(--vang)}
+.nhan-do{background:var(--do-nhat);color:var(--do)}
+.nhan-xam{background:#EEF0F5;color:var(--phu)}
+
+.hang-bai{display:flex;justify-content:space-between;align-items:center;gap:10px;
+  padding:14px 16px;border:1px solid var(--vien);border-radius:15px;margin-bottom:10px;
+  background:var(--the);cursor:pointer;transition:.15s;text-decoration:none;color:inherit;
+  box-shadow:0 1px 5px rgba(30,34,53,.04)}
+.hang-bai:hover{border-color:var(--xanh-vien);box-shadow:0 5px 16px rgba(124,58,237,.12);transform:translateY(-1px)}
+.hang-bai b{font-size:14.5px;font-weight:700;display:block}
+.hang-bai small{font-size:12.5px;color:var(--phu)}
+
+.bao-loi{background:var(--do-nhat);color:var(--do);border-radius:13px;padding:11px 15px;
+  font-size:13.5px;margin-bottom:12px;display:none;font-weight:500}
+.bao-ok{background:var(--luc-nhat);color:#046C4E;border-radius:13px;padding:11px 15px;
+  font-size:13.5px;margin-bottom:12px;display:none;font-weight:500}
+.dang-tai{text-align:center;color:var(--phu);padding:30px 0;font-size:14px}
+.dang-tai::before{content:'';display:inline-block;width:18px;height:18px;margin-right:8px;
+  vertical-align:-4px;border:2.5px solid var(--xanh-nhat);border-top-color:var(--xanh);
+  border-radius:50%;animation:xoay .8s linear infinite}
+@keyframes xoay{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.dang-tai::before{animation:none}}
+
+/* Trang làm bài */
+.thanh-thi{position:sticky;top:0;z-index:10;background:var(--nen);padding:10px 0;
+  display:flex;justify-content:space-between;align-items:center;gap:10px;
+  border-bottom:1px solid var(--vien);margin-bottom:14px}
+.dong-ho{font-weight:800;font-size:15px;background:var(--vang-nhat);color:var(--vang);
+  padding:7px 15px;border-radius:20px}
+.dong-ho.gap{background:var(--do-nhat);color:var(--do)}
+.tieu-de-phan{font-size:11.5px;font-weight:800;color:var(--xanh);text-transform:uppercase;
+  letter-spacing:.1em;margin:24px 0 4px}
+.huong-dan{font-size:13.5px;color:var(--phu);font-style:italic;margin-bottom:12px}
+.doan-van{background:linear-gradient(135deg,#FBFAFF,#F3EEFE);border:1px solid var(--xanh-vien);
+  border-radius:15px;padding:18px;font-size:14.5px;margin-bottom:14px;white-space:pre-wrap}
+.cau{margin-bottom:20px}
+.cau-de{font-size:15px;margin-bottom:9px;font-weight:500}
+.cau-de .stt{font-weight:800;color:var(--xanh)}
+.lua-chon{display:flex;align-items:flex-start;gap:10px;padding:11px 14px;border:1.5px solid var(--vien);
+  border-radius:13px;margin-bottom:8px;cursor:pointer;transition:.12s;background:#fff}
+.lua-chon:hover{border-color:var(--xanh-vien);box-shadow:0 3px 10px rgba(124,58,237,.09)}
+.lua-chon.chon{border-color:var(--xanh);background:var(--xanh-nhat);box-shadow:0 3px 10px rgba(124,58,237,.14)}
+.lua-chon input{margin-top:4px;accent-color:var(--xanh)}
+.lua-chon .chucai{font-weight:800;color:var(--xanh);flex:none}
+.tu-khoa{font-size:11.5px;font-weight:800;background:var(--xanh-nhat);color:var(--xanh-dam);
+  padding:2px 10px;border-radius:16px;margin-left:6px;letter-spacing:.03em}
+
+/* Kết quả */
+.o-diem{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:11px;margin-bottom:16px}
+.o-diem>div{background:var(--the);border:1px solid var(--vien);border-radius:15px;padding:15px;
+  text-align:center;box-shadow:var(--bong)}
+.o-diem small{font-size:11px;color:var(--phu);display:block;text-transform:uppercase;
+  letter-spacing:.07em;font-weight:700;margin-bottom:2px}
+.o-diem b{font-size:26px;font-weight:800;color:var(--xanh)}
+.kq-cau{padding:13px 15px;border:1px solid var(--vien);border-radius:14px;margin-bottom:10px;
+  background:var(--the);box-shadow:0 1px 5px rgba(30,34,53,.04)}
+.kq-cau.dung{border-left:4px solid var(--luc)}
+.kq-cau.sai{border-left:4px solid var(--do)}
+.kq-cau.cho{border-left:4px solid #F59E0B}
+.giai-thich{background:var(--nen);border-radius:11px;padding:10px 13px;font-size:13.5px;color:var(--phu);margin-top:8px}
+
+/* Panel giáo viên */
+.tab-thanh{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px}
+.tab-nut{padding:9px 17px;border-radius:20px;border:1.5px solid var(--vien);background:#fff;
+  font:inherit;font-size:13.5px;font-weight:700;cursor:pointer;color:var(--phu);transition:.15s}
+.tab-nut:hover{border-color:var(--xanh-vien);color:var(--xanh)}
+.tab-nut.mo{background:var(--xanh);border-color:var(--xanh);color:#fff;box-shadow:var(--bong-tim)}
+.bang{width:100%;border-collapse:collapse;font-size:13.5px}
+.bang th{text-align:left;padding:9px 10px;color:var(--phu);font-size:11px;font-weight:700;
+  border-bottom:1.5px solid var(--vien);text-transform:uppercase;letter-spacing:.07em}
+.bang td{padding:11px 10px;border-bottom:1px solid var(--vien);vertical-align:top}
+.bang tr:hover td{background:var(--nen)}
+.luoi-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.thanh-lap{position:sticky;bottom:0;background:var(--the);border:1px solid var(--xanh-vien);
+  border-radius:15px;padding:13px 17px;display:flex;justify-content:space-between;align-items:center;
+  gap:10px;flex-wrap:wrap;box-shadow:0 -6px 22px rgba(124,58,237,.14);margin-top:12px}
+
+/* Bút dạ highlight của học sinh */
+mark{background:#FFE79A;padding:0 2px;border-radius:4px;cursor:pointer}
+mark:hover{background:#FFD966}
